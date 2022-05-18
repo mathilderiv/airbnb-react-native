@@ -1,6 +1,16 @@
 import { useNavigation } from "@react-navigation/core";
+
 import axios from "axios";
-import { Button, Text, View, StyleSheet, Image } from "react-native";
+import {
+  Button,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
+
 import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 
@@ -9,10 +19,28 @@ import { Entypo } from "@expo/vector-icons";
 export default function HomeScreen() {
   const navigation = useNavigation();
 
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const stars = (number) => {
+    if (number === 1) {
+      return "⭐️";
+    }
+    if (number === 2) {
+      return "⭐️⭐️";
+    }
 
+    if (number === 3) {
+      return "⭐️⭐️⭐️";
+    }
+    if (number === 4) {
+      return "⭐️⭐️⭐️⭐️";
+    }
+    if (number === 5) {
+      return "⭐️⭐️⭐️⭐️⭐️";
+    }
+  };
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   console.log(data);
+
   useEffect(() => {
     const fectchData = async () => {
       try {
@@ -30,7 +58,11 @@ export default function HomeScreen() {
   }, []);
 
   return isLoading === true ? (
-    <Text>En cours de chargement...</Text>
+    <View style={styles.activityIndicator}>
+      <ActivityIndicator size="large" color="#FFBAC0" />
+      <ActivityIndicator size="large" color="#FFBAC0" />
+      <ActivityIndicator size="large" color="#FFBAC0" />
+    </View>
   ) : (
     <View style={styles.container}>
       <View>
@@ -38,36 +70,39 @@ export default function HomeScreen() {
           data={data}
           renderItem={({ item, index }) => {
             return (
-              <View style={styles.ad}>
-                <View style={styles.asolute}>
-                  <Image style={styles.adPicture} source={item.photos[0]} />
-                  <Text style={styles.price}>{item.price}€</Text>
-                </View>
-                <View style={styles.bottomAd}>
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={styles.title}
-                  >
-                    {item.title}
-                  </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Room");
+                }}
+              >
+                <View style={styles.ad}>
+                  <View style={styles.asolute}>
+                    <Image style={styles.adPicture} source={item.photos[0]} />
+                    <Text style={styles.price}>{item.price}€</Text>
+                  </View>
+                  <View style={styles.bottomAd}>
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={styles.title}
+                    >
+                      {item.title}
+                    </Text>
 
-                  <Image
-                    style={styles.userPicture}
-                    source={item.user.account.photo}
-                  />
-                </View>
-                <View>
-                  <Text>{item.ratingValue}</Text>
-                  <View>
-                    {item.ratingValue > 4 && <Text>4 étoiles</Text>}
-                    {/* {item.ratingValue > 3 && <Text>3 étoiles</Text>}
-                    {item.ratingValue > 2 && <Text>2 étoiles</Text>}
-                    {item.ratingValue > 1 && <Text>1 étoiles</Text>}
-                    {item.ratingValue > 0 && <Text>pas d'étoiles</Text>} */}
+                    <Image
+                      style={styles.userPicture}
+                      source={item.user.account.photo}
+                    />
+                  </View>
+                  <View style={styles.rating}>
+                    <Text style={styles.stars}>{stars(item.ratingValue)}</Text>
+                    <Text style={styles.ratingValue}>
+                      {item.ratingValue} reviews
+                    </Text>
+                    <View></View>
                   </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           }}
         />
@@ -85,8 +120,17 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     backgroundColor: "white",
     height: 500,
+  },
+
+  activityIndicator: {
+    flex: 1,
+
+    flexDirection: "row",
+
+    justifyContent: "space-around",
   },
 
   logoHeader: {
@@ -112,7 +156,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: "white",
     backgroundColor: "black",
-
+    padding: 5,
     position: "absolute",
     textAlign: "center",
 
@@ -138,5 +182,17 @@ const styles = StyleSheet.create({
   bottomAd: {
     flexDirection: "row",
     justifyContent: "space-around",
+  },
+
+  rating: {
+    flexDirection: "row",
+  },
+
+  stars: {
+    marginRight: 10,
+  },
+
+  ratingValue: {
+    color: "grey",
   },
 });

@@ -13,7 +13,8 @@ import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
-import SplashScreen from "./containers/SplashScreen";
+// import SplashScreen from "./containers/SplashScreen";
+import RoomScreen from "./containers/RoomScreen";
 
 import LogoHeader from "./components/Headertitle";
 
@@ -51,8 +52,6 @@ export default function App() {
   }, []);
 
   if (isLoading === true) {
-    <ActivityIndicator size="small" color="#0000ff" />;
-    // We haven't finished checking for the token yet
     return null;
   }
 
@@ -100,6 +99,17 @@ export default function App() {
                         }}
                       >
                         {() => <HomeScreen />}
+                      </Stack.Screen>
+
+                      <Stack.Screen
+                        name="Room"
+                        options={{
+                          headerBackground: () => {},
+                          headerStyle: { backgroundColor: "white" },
+                          headerTitle: (props) => <LogoHeader {...props} />,
+                        }}
+                      >
+                        {() => <RoomScreen />}
                       </Stack.Screen>
 
                       <Stack.Screen
