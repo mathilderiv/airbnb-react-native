@@ -4,12 +4,18 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { headerTitle } from "react-native";
+
+import { ActivityIndicator } from "react-native";
+
 import HomeScreen from "./containers/HomeScreen";
 import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
 import SplashScreen from "./containers/SplashScreen";
+
+import LogoHeader from "./components/Headertitle";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -45,6 +51,7 @@ export default function App() {
   }, []);
 
   if (isLoading === true) {
+    <ActivityIndicator size="small" color="#0000ff" />;
     // We haven't finished checking for the token yet
     return null;
   }
@@ -87,9 +94,9 @@ export default function App() {
                       <Stack.Screen
                         name="Home"
                         options={{
-                          title: "My App",
-                          headerStyle: { backgroundColor: "red" },
-                          headerTitleStyle: { color: "white" },
+                          headerBackground: () => {},
+                          headerStyle: { backgroundColor: "white" },
+                          headerTitle: (props) => <LogoHeader {...props} />,
                         }}
                       >
                         {() => <HomeScreen />}

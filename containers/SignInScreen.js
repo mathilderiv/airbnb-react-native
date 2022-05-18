@@ -7,37 +7,38 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Platform,
-  KeyboardAvoidingView,
 } from "react-native";
 
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { useState } from "react";
 import axios from "axios";
 
 export default function SignInScreen({ setToken }) {
   const navigation = useNavigation();
 
-
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-const onChange = async (event) => {
-  event.preventDefault();
-}
-
-  if (email , password) {
-try {
-  const response = await axios.post("https://express-airbnb-api.herokuapp.com/user/log_in" , {
-    email, 
-    password,
-  });
-console.log(response.data)
-}catch (error) {
-console.log(error)
-}
-  } else {
-    <Text>Vous devez replir tous les champs</Text>
+  const handleSubmit = async () => {
+    if (email && password) {
+      try {
+        const response = await axios.post(
+          "https://express-airbnb-api.herokuapp.com/user/log_in",
+          {
+            email,
+            password,
+          }
+        );
+        console.log(response.data);
+        const userToken = "secret-token";
+        setToken(response.data.token);
+        alert("Connexion réussie");
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      alert("Vous devez remplir tous les champs");
+    }
   };
 
   return (
@@ -51,37 +52,27 @@ console.log(error)
         <Text style={styles.title}>Sign in</Text>
       </View>
       <View>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.keyboard}
-        >
-          <Text style={styles.email}>email </Text>
-          <TextInput
-            style={styles.placeholderEmail}
-            placeholder="nono@airbnb-api.com"
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-            }}
-          />
-          <Text style={styles.password}>password </Text>
-          <TextInput
-            style={styles.placeholderPassword}
-            placeholder="password"
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-            }}
-            secureTextEntry={true}
-          />
-        </KeyboardAvoidingView>
-        <Button
-          title="Sign in"
-          onPress={async () => {
-            const userToken = "secret-token";
-            setToken(userToken);
+        <Text style={styles.email}>email </Text>
+        <TextInput
+          style={styles.placeholderEmail}
+          placeholder="nono@airbnb-api.com"
+          value={email}
+          onChangeText={(text) => {
+            setEmail(text);
           }}
         />
+        <Text style={styles.password}>password </Text>
+        <TextInput
+          style={styles.placeholderPassword}
+          placeholder="password"
+          value={password}
+          onChangeText={(text) => {
+            setPassword(text);
+          }}
+          secureTextEntry={true}
+        />
+
+        <Button title="Sign in" onPress={handleSubmit} />
 
         <TouchableOpacity
           onPress={() => {
@@ -126,6 +117,9 @@ const styles = StyleSheet.create({
   placeholderEmail: {
     marginBottom: 20,
     marginLeft: 15,
+    borderBottomWidth: 1,
+    width: 330,
+    borderColor: "#FFBAC0",
   },
 
   password: {
@@ -137,6 +131,9 @@ const styles = StyleSheet.create({
   placeholderPassword: {
     marginBottom: 20,
     marginLeft: 15,
+    borderBottomWidth: 1,
+    width: 330,
+    borderColor: "#FFBAC0",
   },
 
   register: {
