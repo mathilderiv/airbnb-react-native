@@ -109,7 +109,7 @@ export default function App() {
                           headerTitle: (props) => <LogoHeader {...props} />,
                         }}
                       >
-                        {() => <RoomScreen />}
+                        {(props) => <RoomScreen {...props} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}

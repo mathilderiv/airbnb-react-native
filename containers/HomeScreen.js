@@ -37,7 +37,7 @@ export default function HomeScreen() {
   };
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  console.log(data);
+  // console.log(data);
 
   useEffect(() => {
     const fectchData = async () => {
@@ -45,7 +45,7 @@ export default function HomeScreen() {
         const response = await axios.get(
           "https://express-airbnb-api.herokuapp.com/rooms"
         );
-        console.log(response.data);
+        // console.log(response.data);
         setData(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
 
   title: {
     marginTop: 10,
-
+    marginLeft: 10,
     marginRight: 10,
     fontSize: 20,
     fontWeight: "bold",
