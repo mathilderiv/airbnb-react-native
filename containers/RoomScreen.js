@@ -1,9 +1,11 @@
 import { useRoute } from "@react-navigation/core";
 import axios from "axios";
-import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
+import { Text, View, StyleSheet, ActivityIndicator, Image } from "react-native";
 import { useEffect, useState } from "react";
+import { FlatList } from "react-native";
 
-export default function RoomScreen() {
+export default function RoomScreen({ route }) {
+  //route contient dans un objet l'id de l'appartement
   const { params } = useRoute();
 
   const [data, setData] = useState(null);
@@ -13,7 +15,7 @@ export default function RoomScreen() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://express-airbnb-api.herokuapp.com/rooms/${params.roomId}`
+          `https://express-airbnb-api.herokuapp.com/rooms/${route.params.roomId}`
         );
         // console.log(data);
         setData(response.data);
@@ -32,10 +34,16 @@ export default function RoomScreen() {
       <ActivityIndicator size="large" color="#FFBAC0" />
     </View>
   ) : (
-    <View>
-      <Text>test</Text>
+    <View style={styles.container}>
+      <View style={styles.map}></View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  activityIndicator: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    flex: 1,
+  },
+});

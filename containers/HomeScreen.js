@@ -14,8 +14,6 @@ import {
 import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 
-import { Entypo } from "@expo/vector-icons";
-
 export default function HomeScreen() {
   const navigation = useNavigation();
 
@@ -37,7 +35,7 @@ export default function HomeScreen() {
       return "⭐️⭐️⭐️⭐️⭐️";
     }
   };
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   console.log(data);
 
@@ -68,11 +66,12 @@ export default function HomeScreen() {
       <View>
         <FlatList
           data={data}
-          renderItem={({ item, index }) => {
+          keyExtractor={(elem) => elem._id} //L'équivalent de l'index dans le map
+          renderItem={({ item }) => {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("Room");
+                  navigation.navigate("Room", { roomId: item._id });
                 }}
               >
                 <View style={styles.ad}>
@@ -97,9 +96,8 @@ export default function HomeScreen() {
                   <View style={styles.rating}>
                     <Text style={styles.stars}>{stars(item.ratingValue)}</Text>
                     <Text style={styles.ratingValue}>
-                      {item.ratingValue} reviews
+                      {item.reviews} reviews
                     </Text>
-                    <View></View>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -107,12 +105,6 @@ export default function HomeScreen() {
           }}
         />
       </View>
-      <Button
-        title="Go to Profile"
-        onPress={() => {
-          navigation.navigate("Profile", { userId: 123 });
-        }}
-      />
     </View>
   );
 }
@@ -123,6 +115,7 @@ const styles = StyleSheet.create({
 
     backgroundColor: "white",
     height: 500,
+    padding: 10,
   },
 
   activityIndicator: {
@@ -166,22 +159,26 @@ const styles = StyleSheet.create({
   },
 
   userPicture: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     marginTop: 10,
+    marginRight: 10,
   },
 
   title: {
     marginTop: 10,
+
+    marginRight: 10,
     fontSize: 20,
     fontWeight: "bold",
-    width: 320,
+    width: 310,
   },
 
   bottomAd: {
     flexDirection: "row",
     justifyContent: "space-around",
+    height: 50,
   },
 
   rating: {
