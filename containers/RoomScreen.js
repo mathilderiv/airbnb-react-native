@@ -12,8 +12,8 @@ import { FlatList } from "react-native";
 import { TouchableOpacity } from "react-native";
 
 //Package pour les maps google
-// import MapView from "react-native-maps";
-// import * as Location from "expo-location";
+import MapView from "react-native-maps";
+import * as Location from "expo-location";
 
 export default function RoomScreen({ route, navigation }) {
   //route contient dans un objet l'id de l'appartement
@@ -46,7 +46,7 @@ export default function RoomScreen({ route, navigation }) {
   const [showText, setShowText] = useState(false);
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
-  // const [coords, setCoords] = useState();
+  const [coords, setCoords] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +64,26 @@ export default function RoomScreen({ route, navigation }) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const askPermission = async () => {
+      try {
+        if (response.status === "granted") {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          console.log(status);
+          setLatitude(location.coords.latitude);
+          setLongitude(location.coords.longitude);
+        } else {
+          alert(
+            "Vous devez acceptez la géolocatilisation pour utiliser cette fonctionnalité"
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    askPermission();
+  }, []);
+
   return isLoading ? (
     <View style={styles.activityIndicator}>
       <ActivityIndicator size="large" color="#FFBAC0" />
@@ -72,49 +92,68 @@ export default function RoomScreen({ route, navigation }) {
     </View>
   ) : (
     <View style={styles.container}>
-      <View style={styles.map}>
-        <View style={styles.scrollView}>
-          <FlatList
-            horizontal={true}
-            data={data.photos}
-            keyExtractor={(elem) => elem._id}
-            renderItem={({ item }) => {
-              return (
-                <View>
-                  <View style={styles.scrollViewImage}>
-                    <Image
-                      style={styles.roomPicture}
-                      source={{ uri: item.url }}
-                    />
+      <ScrollView>
+        <View style={styles.search}>
+          <View style={styles.scrollView}>
+            <FlatList
+              horizontal={true}
+              data={data.photos}
+              keyExtractor={(elem) => elem._id}
+              renderItem={({ item }) => {
+                return (
+                  <View>
+                    <View style={styles.scrollViewImage}>
+                      <Image
+                        style={styles.roomPicture}
+                        source={{ uri: item.url }}
+                      />
+                    </View>
                   </View>
-                </View>
-              );
-            }}
-          />
-        </View>
-        <View style={styles.adBottom}>
-          <Text numberOfLines={1} style={styles.title}>
-            {data.title}
-          </Text>
-          <Image style={styles.userPicture} source={data.user.account.photo} />
-        </View>
+                );
+              }}
+            />
+          </View>
+          <View style={styles.adBottom}>
+            <Text numberOfLines={1} style={styles.title}>
+              {data.title}
+            </Text>
+            <Image
+              style={styles.userPicture}
+              source={data.user.account.photo}
+            />
+          </View>
 
-        <View style={styles.rating}>
-          <Text style={styles.stars}>{stars(data.ratingValue)}</Text>
-          <Text style={styles.ratingValue}>{data.reviews} reviews</Text>
-        </View>
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              setShowText(!showText);
-            }}
-          >
-            <Text numberOfLines={showText ? null : 3}>{data.description}</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.rating}>
+            <Text style={styles.stars}>{stars(data.ratingValue)}</Text>
+            <Text style={styles.ratingValue}>{data.reviews} reviews</Text>
+          </View>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                setShowText(!showText);
+              }}
+            >
+              <Text numberOfLines={showText ? null : 3}>
+                {data.description}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <Text style={styles.price}>{data.price}€</Text>
-      </View>
+          <Text style={styles.price}>{data.price}€</Text>
+        </View>
+        <View style={styles.localisationMap}>
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: 48.86940902046365,
+              longitude: 2.361406005155942,
+              latitudeDelta: 0.5,
+              longitudeDelta: 0.5,
+            }}
+            showUserLocation={true}
+          ></MapView>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -182,5 +221,10 @@ const styles = StyleSheet.create({
   adBottom: {
     flexDirection: "row",
     marginTop: 10,
+  },
+
+  map: {
+    marginTop: 20,
+    height: 400,
   },
 });
