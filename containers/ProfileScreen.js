@@ -17,8 +17,10 @@ export default function ProfileScreen({
   setUserId,
   userToken,
 }) {
-  console.log(userToken);
+  // console.log(userToken);
+  // console.log(userId);
   // console.log("ici ==>", params);
+
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");

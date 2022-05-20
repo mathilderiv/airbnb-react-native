@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { headerTitle } from "react-native";
 
-import { ActivityIndicator } from "react-native";
-
+//SCREENS
 import HomeScreen from "./containers/HomeScreen";
-
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import ProfileScreen from "./containers/ProfileScreen";
 import AroundMeScreen from "./containers/AroundMeScreen";
 import RoomScreen from "./containers/RoomScreen";
 
+//COMPONENTS
 import LogoHeader from "./components/Headertitle";
 
 const Tab = createBottomTabNavigator();
@@ -65,6 +65,7 @@ export default function App() {
             <Stack.Screen name="SignIn">
               {() => <SignInScreen setToken={setToken} setUserId={setUserId} />}
             </Stack.Screen>
+
             <Stack.Screen name="SignUp">
               {() => <SignUpScreen setToken={setToken} setUserId={setUserId} />}
             </Stack.Screen>

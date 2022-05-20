@@ -9,11 +9,10 @@ import {
   Image,
 } from "react-native";
 
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { useState } from "react";
 import axios from "axios";
 
-export default function SignInScreen({ setToken }) {
+export default function SignInScreen({ setToken, setUserId }) {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -32,6 +31,7 @@ export default function SignInScreen({ setToken }) {
         console.log(response.data);
         const userToken = "secret-token";
         setToken(response.data.token);
+        setUserId(response.data.id);
         alert("Connexion réussie");
       } catch (error) {
         console.log(error);
