@@ -1,4 +1,6 @@
 import axios from "axios";
+
+import { Dimensions } from "react-native"; //Pour récupérer la taille de l'écran
 import {
   Text,
   View,
@@ -67,11 +69,9 @@ export default function RoomScreen({ route, navigation }) {
   useEffect(() => {
     const askPermission = async () => {
       try {
-        if (response.status === "granted") {
-          let { status } = await Location.requestForegroundPermissionsAsync();
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === "granted") {
           console.log(status);
-          setLatitude(location.coords.latitude);
-          setLongitude(location.coords.longitude);
         } else {
           alert(
             "Vous devez acceptez la géolocatilisation pour utiliser cette fonctionnalité"
@@ -98,7 +98,10 @@ export default function RoomScreen({ route, navigation }) {
             <FlatList
               horizontal={true}
               data={data.photos}
-              keyExtractor={(elem) => elem._id}
+              keyExtractor={(elem) => {
+                // console.log(elem, "log de elem !!!!");
+                return elem.picture_id;
+              }}
               renderItem={({ item }) => {
                 return (
                   <View>
@@ -142,16 +145,24 @@ export default function RoomScreen({ route, navigation }) {
           <Text style={styles.price}>{data.price}€</Text>
         </View>
         <View style={styles.localisationMap}>
+          {/* initial region est ce sur quoi on veut que la map s'initialise par défaut */}
           <MapView
             style={styles.map}
             initialRegion={{
-              latitude: 48.86940902046365,
-              longitude: 2.361406005155942,
-              latitudeDelta: 0.5,
-              longitudeDelta: 0.5,
+              latitude: data.location[1],
+              longitude: data.location[0],
+              latitudeDelta: 0.2,
+              longitudeDelta: 0.2,
             }}
-            showUserLocation={true}
-          ></MapView>
+            showsUserLocation={true}
+          >
+            <MapView.Marker
+              coordinate={{
+                latitude: data.location[1],
+                longitude: data.location[0],
+              }}
+            />
+          </MapView>
         </View>
       </ScrollView>
     </View>
