@@ -24,6 +24,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const setToken = async (token) => {
     if (token) {
@@ -62,10 +63,10 @@ export default function App() {
           // No token found, user isn't signed in
           <>
             <Stack.Screen name="SignIn">
-              {() => <SignInScreen setToken={setToken} />}
+              {() => <SignInScreen setToken={setToken} setUserId={setUserId} />}
             </Stack.Screen>
             <Stack.Screen name="SignUp">
-              {() => <SignUpScreen setToken={setToken} />}
+              {() => <SignUpScreen setToken={setToken} setUserId={setUserId} />}
             </Stack.Screen>
           </>
         ) : (
@@ -163,7 +164,14 @@ export default function App() {
                           headerTitle: () => <LogoHeader />,
                         }}
                       >
-                        {() => <ProfileScreen userToken={userToken} />}
+                        {() => (
+                          <ProfileScreen
+                            userToken={userToken}
+                            userId={userId}
+                            setToken={setToken}
+                            setUserId={setUserId}
+                          />
+                        )}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
