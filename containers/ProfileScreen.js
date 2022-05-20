@@ -1,34 +1,58 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
-export default function ProfileScreen({ route }) {
-  const { params } = route;
-  // console.log("ici ==>", params);
 
+export default function ProfileScreen({
+  setToken,
+  userId,
+  setUserId,
+  userToken,
+}) {
+  // console.log("ici ==>", params);
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleUpdate = async () => {
-    try {
-      const response = await axios.get(
-        `https://express-airbnb-api.herokuapp.com/user/${params._id}`
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  return (
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://express-airbnb-api.herokuapp.com/user/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userToken} `,
+            },
+          }
+        );
+        console.log(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData;
+  }, []);
+
+  return isLoading ? (
+    <View style={styles.activityIndicator}>
+      <ActivityIndicator size="large" color="#FFBAC0" />
+      <ActivityIndicator size="large" color="#FFBAC0" />
+      <ActivityIndicator size="large" color="#FFBAC0" />
+    </View>
+  ) : (
     <View style={styles.container}>
+      <Text>Votre profile</Text>
       <KeyboardAwareScrollView>
         <View style={styles.form}>
           <Text>email</Text>
@@ -58,15 +82,12 @@ export default function ProfileScreen({ route }) {
           />
         </View>
 
-        <TouchableOpacity
-          style={StyleSheet.updateButton}
-          onPress={handleUpdate}
-        >
+        <TouchableOpacity style={StyleSheet.updateButton}>
           <Text> Update</Text>
         </TouchableOpacity>
       </KeyboardAwareScrollView>
 
-      {/* <Text>user id : {params.userId}</Text> */}
+      <Text>user id : {userId}</Text>
     </View>
   );
 }

@@ -2,13 +2,13 @@ import { Image, View, TouchableOpacity } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
 
-function LogoHeader() {
+function LogoHeader({ setToken }) {
   const navigation = useNavigation();
   return (
     <View>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("SignIn");
+          setToken(null);
         }}
       >
         <Image

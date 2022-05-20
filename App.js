@@ -95,7 +95,7 @@ export default function App() {
                         options={{
                           headerBackground: () => {},
                           headerStyle: { backgroundColor: "white" },
-                          headerTitle: (props) => <LogoHeader {...props} />,
+                          headerTitle: () => <LogoHeader setToken={setToken} />,
                         }}
                       >
                         {() => <HomeScreen />}
@@ -106,7 +106,7 @@ export default function App() {
                         options={{
                           headerBackground: () => {},
                           headerStyle: { backgroundColor: "white" },
-                          headerTitle: (props) => <LogoHeader {...props} />,
+                          headerTitle: () => <LogoHeader setToken={setToken} />,
                         }}
                       >
                         {(props) => <RoomScreen {...props} />}
@@ -131,7 +131,7 @@ export default function App() {
                         options={{
                           headerBackground: () => {},
                           headerStyle: { backgroundColor: "white" },
-                          headerTitle: (props) => <LogoHeader {...props} />,
+                          headerTitle: () => <LogoHeader setToken={setToken} />,
                         }}
                       >
                         {() => <AroundMeScreen />}
@@ -160,10 +160,10 @@ export default function App() {
                         options={{
                           headerBackground: () => {},
                           headerStyle: { backgroundColor: "white" },
-                          headerTitle: (props) => <LogoHeader {...props} />,
+                          headerTitle: () => <LogoHeader />,
                         }}
                       >
-                        {(props) => <ProfileScreen {...props} />}
+                        {() => <ProfileScreen userToken={userToken} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
