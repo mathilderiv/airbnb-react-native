@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+
 import {
   Text,
   View,
@@ -17,15 +18,19 @@ export default function ProfileScreen({
   setUserId,
   userToken,
 }) {
-  // console.log(userToken);
-  // console.log(userId);
-  // console.log("ici ==>", params);
+  console.log("token", userToken);
+  console.log("userId", userId);
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  //STATE INFORMATIONS USER
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [description, setDescription] = useState("");
+
+  //STATE UPDATE USER
+  const [sendingUser, setSendingUser] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,14 +43,46 @@ export default function ProfileScreen({
             },
           }
         );
-        console.log(response.data);
+        console.log("response.data", response.data);
         setIsLoading(false);
+        setEmail(response.data.email);
+        setDescription(response.data.description);
+        setUserName(response.data.username);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData;
+    fetchData();
   }, []);
+
+  //Update user
+  const updateUser = async () => {
+    try {
+      setSendingUser(true);
+      const obj = {};
+      obj.email = email;
+      obj.description = description;
+      obj.userName = userName;
+
+      const response = await axios.put(
+        "https://express-airbnb-api.herokuapp.com/user/update",
+        obj,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      setEmail(response.data.email);
+      setDescription(response.data.description);
+      setUserName(response.data.userName);
+      setSendingUser(false);
+      alert("Vos informations ont bien été prises en compte");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return isLoading ? (
     <View style={styles.activityIndicator}>
@@ -58,26 +95,27 @@ export default function ProfileScreen({
       <Text>Votre profile</Text>
       <KeyboardAwareScrollView>
         <View style={styles.form}>
-          <Text>email</Text>
           <TextInput
             style={styles.email}
-            value={email}
+            placeholder={email}
+            value={data.email}
             onChangeText={(text) => {
               setEmail(text);
             }}
           />
-          <Text>userName</Text>
+
           <TextInput
             style={styles.username}
+            placeholder="email"
             value={userName}
             onChangeText={(text) => {
               setUserName(text);
             }}
           />
 
-          <Text>description</Text>
           <TextInput
             style={styles.description}
+            placeholder={description}
             value={description}
             onChangeText={(text) => {
               setDescription(text);
@@ -85,12 +123,20 @@ export default function ProfileScreen({
           />
         </View>
 
-        <TouchableOpacity style={StyleSheet.updateButton}>
+        <TouchableOpacity style={StyleSheet.updateButton} onPress={updateUser}>
           <Text> Update</Text>
         </TouchableOpacity>
-      </KeyboardAwareScrollView>
 
-      <Text>user id : {userId}</Text>
+        <TouchableOpacity
+          style={StyleSheet.logoutButton}
+          onPress={() => {
+            setToken(null);
+            setUserId(null);
+          }}
+        >
+          <Text> Log out</Text>
+        </TouchableOpacity>
+      </KeyboardAwareScrollView>
     </View>
   );
 }

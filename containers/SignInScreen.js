@@ -28,8 +28,9 @@ export default function SignInScreen({ setToken, setUserId }) {
             password,
           }
         );
-        console.log(response.data);
-        const userToken = "secret-token";
+        console.log("response", response.data.id);
+        // console.log(response.data);
+        // const userToken = "secret-token";
         setToken(response.data.token);
         setUserId(response.data.id);
         alert("Connexion réussie");
